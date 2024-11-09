@@ -16,7 +16,7 @@ def claude_chat(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "model": "claude3.5Sonnet20241022",
+        "model": "claude-3-5-sonnet-20241022",
         "prompt": prompt,
         "max_tokens_to_sample": 150
     }
