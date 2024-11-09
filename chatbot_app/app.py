@@ -1,10 +1,13 @@
+import os
 from flask import Flask, request, jsonify, render_template
 import requests
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 app = Flask(__name__)
-
-# Replace with your actual API key
-ANTHROPIC_API_KEY = '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'
 
 def claude_chat(prompt):
     url = "https://api.anthropic.com/v1/complete"
@@ -15,7 +18,7 @@ def claude_chat(prompt):
     data = {
         "model": "claude3.5Sonnet20241022",
         "prompt": prompt,
-        "max_tokens_to_sample": 200
+        "max_tokens_to_sample": 150
     }
     response = requests.post(url, headers=headers, json=data)
     return response.json().get("completion", "Error fetching response").strip()
