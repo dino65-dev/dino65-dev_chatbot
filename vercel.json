@@ -14,6 +14,8 @@
   ],
   "env": {
     "OPENAI_API_KEY": "OPENAI_API_KEY"
+},
+"projectSettings": { "buildCommand": null, "devCommand": null, "framework": "python", "commandForIgnoringBuildStep": "", "installCommand": null, "outputDirectory": null
 }
 }
 
