@@ -1,35 +1,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Chatbot</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        .chat-container { max-width: 600px; margin: auto; }
-        #chat-output { margin-top: 20px; }
-        .user-input { margin: 10px 0; padding: 8px; width: 80%; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="chat-container">
-        <h1>GitHub Chatbot</h1>
-        <input id="user-query" class="user-input" type="text" placeholder="Ask a question about GitHub...">
-        <button onclick="askChatbot()">Ask</button>
-        <div id="chat-output"></div>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>Chatbot</h1>
     </div>
-    
-    <script>
-        async function askChatbot() {
-            const userQuery = document.getElementById("user-query").value;
-            const response = await fetch('/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: userQuery })
-            });
-            const result = await response.json();
-            document.getElementById("chat-output").innerText = "Chatbot: " + result.response;
-        }
-    </script>
+    <div class="chat-box" id="chat-box">
+      <div class="message bot-message">Hello! I am a Chatbot created by Dinmay. Ask me anything. </div>
+    </div>
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Ask your query..." autofocus />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById("user-input").value;
+      if (!userInput) return;
+
+      // Append user message to chat box
+      const chatBox = document.getElementById("chat-box");
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user-message";
+      userMessage.textContent = userInput;
+      chatBox.appendChild(userMessage);
+
+      // Clear input field
+      document.getElementById("user-input").value = "";
+
+      // Fetch chatbot response
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: userInput })
+      });
+      const data = await response.json();
+
+      // Append chatbot response to chat box
+      const botMessage = document.createElement("div");
+      botMessage.className = "message bot-message";
+      botMessage.textContent = data.response;
+      chatBox.appendChild(botMessage);
+
+      // Scroll to the latest message
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
 </body>
 </html>
+
+<style>
+  /* Paste your styles.css content here */
+ /* General Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(circle, #ffafbd, #ffc3a0);
+}
+
+/* Chat Container */
+.chat-container {
+  width: 100%;
+  max-width: 400px;
+  height: 80vh;
+  background-color: #ffffff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Header */
+.chat-header {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* Chat Box */
+.chat-box {
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+  scroll-behavior: smooth;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: none;
+  align-items: center;
+  gap: 5px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #333;
+  border-radius: 50%;
+  animation: blink 1s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Message Bubbles */
+.message {
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 75%;
+  line-height: 1.4;
+  font-size: 14px;
+  opacity: 0;
+  animation: fadeInUp 0.5s forwards;
+  transform: scale(0.95);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+  color: white;
+  border-bottom-right-radius: 0;
+}
+
+.user-message:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.bot-message {
+  align-self: flex-start;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: #333;
+  border-bottom-left-radius: 0;
+}
+
+.bot-message:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Input Container */
+.input-container {
+  display: flex;
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  background-color: #ffffff;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #4CAF50;
+}
+
+button {
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: background-color 0.3s ease, transform 0.1s;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #5b86e5, #36d1dc);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+button:active::after {
+  width: 120px;
+  height: 120px;
+}
+
+/* Scrollbar styling */
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+
+
+</style>
+
+<script>
+
+const form = document.getElementById('chat-form');
+const input = document.getElementById('user-input');
+const chatBox = document.querySelector('.chat-box');
+const typingIndicator = document.createElement('div');
+typingIndicator.className = 'typing-indicator';
+typingIndicator.innerHTML = `
+  <span class="typing-dot"></span>
+  <span class="typing-dot"></span>
+  <span class="typing-dot"></span>
+`;
+chatBox.appendChild(typingIndicator);
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const userMessage = input.value.trim();
+  if (userMessage) {
+    addMessage(userMessage, 'user-message');
+    input.value = '';
+    
+    showTypingIndicator();
+    setTimeout(() => {
+      addMessage('This is a simulated bot response. How can I assist further?', 'bot-message');
+      hideTypingIndicator();
+    }, 2000);
+  }
+});
+
+function addMessage(content, className) {
+  const message = document.createElement('div');
+  message.className = `message ${className}`;
+  message.textContent = content;
+  chatBox.appendChild(message);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function showTypingIndicator() {
+  typingIndicator.style.display = 'flex';
+}
+
+function hideTypingIndicator() {
+  typingIndicator.style.display = 'none';
+}
+
+
+</script>
