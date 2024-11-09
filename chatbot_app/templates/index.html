@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .chat-container { max-width: 600px; margin: auto; }
+        #chat-output { margin-top: 20px; }
+        .user-input { margin: 10px 0; padding: 8px; width: 80%; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>GitHub Chatbot</h1>
+        <input id="user-query" class="user-input" type="text" placeholder="Ask a question about GitHub...">
+        <button onclick="askChatbot()">Ask</button>
+        <div id="chat-output"></div>
+    </div>
+    
+    <script>
+        async function askChatbot() {
+            const userQuery = document.getElementById("user-query").value;
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: userQuery })
+            });
+            const result = await response.json();
+            document.getElementById("chat-output").innerText = "Chatbot: " + result.response;
+        }
+    </script>
+</body>
+</html>
