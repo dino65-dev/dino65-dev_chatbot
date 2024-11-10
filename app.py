@@ -1,4 +1,5 @@
 import os
+import markdown2
 import logging
 from flask import Flask, request, jsonify, render_template
 from flask_limiter import Limiter
@@ -34,7 +35,9 @@ def get_travel_advice(user_prompt):
             temperature=0.7,
             max_tokens=256,
         )
-        return completion.choices[0].message.content
+        markdown_text = completion.choices[0].message.content
+        html_content = markdown2.markdown(markdown_text)
+        return html_content
     except Exception as e:
         logging.error(f"Error calling OpenAI API: {e}")
         return "Error: Unable to fetch travel advice at this time."
